@@ -1,0 +1,193 @@
+<html>
+
+<head>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.css">
+    
+    <link href="./css/style.css" rel="stylesheet" id="style-css">
+
+    <title>Deepstack</title>
+
+</head>
+
+<body>
+
+    <div class="navbar-fixed ">
+        <nav>
+            <div class="nav-wrapper blue ">
+
+                <div class="row mb-0">
+                    <div class="col s12 m8 offset-m2">
+                        <h3></h3>
+                    </div>
+                </div>
+                <div class="row mb-0">
+                    <div class='col s12 m6   l4 offset-l2'>
+
+
+                        <ul class="tabs blue">
+                            <li class="tab col s1 "><a href="#new" class='active white-text regular'>Face Learning</a></li>
+                            <li class="tab col s1"><a class=" white-text regular" href="#who">Face Recognition</a></li>
+                            <li class="tab col s1"><a class=" white-text regular" href="#analyze">Object Detection</a></li>
+                            <li class="tab col s1"><a class=" white-text regular" href="#scene">Scene Detection</a></li>
+
+
+                        </ul>
+
+                    </div>
+                </div>
+
+            </div>
+        </nav>
+    </div>
+
+
+    <div class="container pt-10">
+        <div class="row card">
+            <div id="new" class="col s12">
+                
+
+                <form method="post" enctype="multipart/form-data" id="teach-form">
+                    <div class="container">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <span class="btn btn-primary btn-file">
+                                            Browse… <input type="file" id="teach-file" name="teach-file" class="imgfile">
+                                        </span>
+                                    </span>
+                                    <input type="text" class="form-control" readonly>
+                                </div>
+                                <img id='teach-img' src="./img/avatar.png" />
+                                
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                   <label> Who is in the picture?</label>
+                                    <input type="text" class="form-control" name="teach-name" id="teach-name" placeholder="Please enter the name of the person in the image">
+                                </div>
+            
+                            </div>
+                            <div style="display:block;margin:0 auto;width:30%">
+                                <input type="button" class="btn btn-primary btn-post" value="Teach ME" id="teach-btn" style="padding-left: 20px;padding-right:20px;">
+                            </div>
+            
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+            <div id="who" class="col s12">
+               
+                <form method="post" enctype="multipart/form-data" id="who-form">
+                    <div class="container">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <span class="btn btn-primary btn-file">
+                                            Browse… <input type="file" id="who-file" name="who-file"  class="imgfile">
+                                        </span>
+                                    </span>
+                                    <input type="text" class="form-control" readonly>
+                                </div>
+                                <img id='who-img' src="./img/avatar.png" />
+                                
+                            </div>
+                           <br>
+                            <div style="display:block;margin:0 auto;width:30%">
+                                <input type="button" class="btn btn-primary btn-post" value="Who is it" id="who-btn"
+                                    style="padding-left: 20px;padding-right:20px;">
+                            </div>
+            
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div id="analyze" class="col s12">
+               
+                <form method="post" enctype="multipart/form-data" id="detect-form">
+                    <div class="container">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <span class="btn btn-primary btn-file">
+                                            Browse… <input type="file" id="detect-file" name="detect-file"  class="imgfile">
+                                        </span>
+                                    </span>
+                                    <input type="text" class="form-control" readonly>
+                                </div>
+                                <img id='detect-img' src="./img/avatar.png" />
+                                
+                            </div>
+                           <br>
+                            <div style="display:block;margin:0 auto;width:30%">
+                                <input type="button" class="btn btn-primary btn-post" value="Detect Objects" id="detect-btn"
+                                    style="padding-left: 20px;padding-right:20px;">
+                            </div>
+            
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+
+            <div id="scene" class="col s12">
+               
+                <form method="post" enctype="multipart/form-data" id="scene-form">
+                    <div class="container">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <span class="btn btn-primary btn-file">
+                                            Browse… <input type="file" id="scene-file" name="scene-file"  class="imgfile">
+                                        </span>
+                                    </span>
+                                    <input type="text" class="form-control" readonly>
+                                </div>
+                                <img id='scene-img' src="./img/avatar.png" />
+                                
+                            </div>
+                           <br>
+                            <div style="display:block;margin:0 auto;width:30%">
+                                <input type="button" class="btn btn-primary btn-post" value="Detect Scene" id="scene-btn"
+                                    style="padding-left: 20px;padding-right:20px;">
+                            </div>
+            
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+
+        </div>
+    </div>
+    </div>
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+<script src="./js/home.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    $(".button-collapse").sideNav();
+    // $(document).ready(function () {
+    //     Materialize.toast('Ready', 4000)
+    // });
+</script>
+
+</html>

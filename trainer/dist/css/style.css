@@ -1,0 +1,63 @@
+body {
+  height: 50em;
+  background: #f1f1f1;
+}
+
+.navbar-fixed {
+  height: auto !important;
+}
+
+nav {
+  height: auto;
+}
+
+.mb-0 {
+  margin-bottom: 0px;
+}
+
+
+.pt-10 {
+  padding-top: 10em;
+}
+
+.tabs .indicator {
+  background-color: #fff;
+}
+
+.header {
+  margin: 1em 0em;
+  font-weight: 600;
+  color: #333;
+  /* text-transform: uppercase; */
+}
+.regular
+{
+  text-transform:none !important;
+}
+
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  /* filter: alpha(opacity=0); */
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+
+#teach-img, #who-img, #detect-img, #scene-img {
+  width: 450px;
+  margin: 0 auto;
+  display: block;
+}
