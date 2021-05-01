@@ -27,4 +27,21 @@ Basic Parameters:
 * -v localstorage:/datastore This specifies the local volume where deepstack will store all data.
 * -p 80:5000 This makes deepstack accessible via port 80 of the machine.
 
-
+We can also install Deepstack using docker-compose:
+```
+version: "3.7"
+services:
+  deepstack:
+    image: deepquestai/deepstack:latest
+    restart: unless-stopped
+    container_name: deepstack
+    ports:
+      - "80:5000"
+    environment:
+      - TZ=Asia/Jerusalem
+      - VISION-FACE=True
+      - VISION-DETECTION=True
+      - VISION-SCENE=True
+    volumes:
+      - ./deepstack:/datastore
+```
