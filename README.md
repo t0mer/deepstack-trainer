@@ -18,7 +18,7 @@ DeepStack’s source code is available on GitHub via [https://github.com/johnola
 
 # Installation
 In order to use Deepstack Trainer we need to install Deepstack.
-We can do that by running the following command :
+We can do that by running the following command:
 ```docker run -e VISION-FACE=True -v localstorage:/datastore -p 80:5000 deepquestai/deepstack```
 
 Basic Parameters:
