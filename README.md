@@ -24,3 +24,5 @@ Basic Parameters:
 * -e VISION-FACE=True This enables the face recognition APIs.
 * -v localstorage:/datastore This specifies the local volume where deepstack will store all data.
 * -p 80:5000 This makes deepstack accessible via port 80 of the machine.
+
+
