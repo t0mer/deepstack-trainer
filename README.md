@@ -20,6 +20,7 @@ DeepStack’s source code is available on GitHub via [https://github.com/johnola
 In order to use Deepstack Trainer we need to install Deepstack.
 We can do that by running the following command :
 ```docker run -e VISION-FACE=True -v localstorage:/datastore -p 80:5000 deepquestai/deepstack```
+
 Basic Parameters:
 * -e VISION-FACE=True This enables the face recognition APIs.
 * -v localstorage:/datastore This specifies the local volume where deepstack will store all data.
