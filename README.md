@@ -17,6 +17,7 @@ DeepStack’s source code is available on GitHub via [https://github.com/johnola
 - [sweetalert2](https://sweetalert2.github.io/) - For alerts and messages
 
 # Installation
+#### Deepstack Installation
 In order to use Deepstack Trainer we need to install Deepstack.
 We can do that by running the following command:
 
@@ -45,3 +46,46 @@ services:
     volumes:
       - ./deepstack:/datastore
 ```
+
+#### Deepstack Trainer Installation
+Deepstack Trainer installation is very easy using docker-compose:
+```
+version: "3.7"
+services:
+  deepstack_trainer:
+    image: techblog/deepstack-trainer
+    container_name: deepstack_trainer
+    privileged: true
+    restart: always
+    environment:
+      - DEEPSTACK_HOST_ADDRESS=
+      - DEEPSTACK_API_KEY=
+      - MIN_CONFIDANCE=
+    ports:
+      - "8080:8080" 
+```
+
+Basic Parameters:
+* DEEPSTACK_HOST_ADDRESS - Deepstack API Url (http://localhost:5000)
+* DEEPSTACK_API_KEY - If your Deepstack API is token protected enter your token here or alse leave blank
+* MIN_CONFIDANCE - Minimum Confidence level to identify object or face (Default is 0.70)
+
+
+
+
+
+
+
+# Integrations and Community
+The DeepStack ecosystem includes a number of popular integrations and libraries built to expand the functionalities of the AI engine to serve IoT, industrial, monitoring and research applications. A number of them are listed below
+
+* [HASS-DeepStack-Object](https://github.com/robmarkcole/HASS-Deepstack-object)
+* [HASS-DeepStack-Face](https://github.com/robmarkcole/HASS-Deepstack-face)
+* [HASS-DeepStack-Scene](https://github.com/robmarkcole/HASS-Deepstack-scene)
+* [DeepStack with Blue Iris - YouTube video](https://www.youtube.com/watch?v=fwoonl5JKgo)
+* [DeepStack with Blue Iris - Forum Discussion](https://ipcamtalk.com/threads/tool-tutorial-free-ai-person-detection-for-blue-iris.37330/)
+* [DeepStack on Home Assistant](https://community.home-assistant.io/t/face-and-person-detection-with-deepstack-local-and-free/92041)
+* [DeepStack-UI](https://github.com/robmarkcole/deepstack-ui)
+* [DeepStack-Python Helper](https://github.com/robmarkcole/deepstack-python)
+* [DeepStack-Analytics](https://github.com/robmarkcole/deepstack-analytics)
+* [DeepStackAI Trigger](https://github.com/danecreekphotography/node-deepstackai-trigger)
