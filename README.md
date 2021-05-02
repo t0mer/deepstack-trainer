@@ -71,7 +71,10 @@ Basic Parameters:
 * MIN_CONFIDANCE - Minimum Confidence level to identify object or face (Default is 0.70)
 
 
-
+## Working with Deepstack Trainer
+After the docker is up and running, open your browser and navigate to your Deepstack Trainer url. you will be able to see four tabs:
+* Face Learning (Registring).
+[![Face Registring](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/teach%20face.png?raw=true "Face Registring")](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/teach%20face.png?raw=true "Face Registring")
 
 
 
