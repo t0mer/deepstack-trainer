@@ -76,8 +76,14 @@ After the docker is up and running, open your browser and navigate to your Deeps
 * Face Learning (Registring).
 [![Face Registring](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/teach%20face.png?raw=true "Face Registring")](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/teach%20face.png?raw=true "Face Registring")
 
+* Face Recognition
+[![Face Recognition](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/face%20recognition.png?raw=true "Face Recognition")](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/face%20recognition.png?raw=true "Face Recognition")
 
+* Object Detection
+[![Object Detection](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/object%20detection.png?raw=true "Object Detection")](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/object%20detection.png?raw=true "Object Detection")
 
+* Scene Detection
+[![Scene Detection](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/scene%20detection.png?raw=true "Scene Detection")](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/scene%20detection.png?raw=true "Scene Detection")
 
 # Integrations and Community
 The DeepStack ecosystem includes a number of popular integrations and libraries built to expand the functionalities of the AI engine to serve IoT, industrial, monitoring and research applications. A number of them are listed below
