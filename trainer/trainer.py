@@ -1,6 +1,5 @@
 
 from flask import Flask, request, make_response, render_template, url_for, g, send_from_directory, jsonify
-from flask_restful import Resource, Api
 import os, json
 from os import environ
 from os import path
@@ -28,8 +27,6 @@ logger.info("#########################################")
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./"
-api = Api(app)
-
 
 def teachme(person,image_file):
     user_image = open(image_file,"rb").read()
