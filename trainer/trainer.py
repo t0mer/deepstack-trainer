@@ -1,16 +1,23 @@
 
-from flask import Flask, request, make_response, render_template, url_for, g, send_from_directory, jsonify
 import os, json
 from os import environ
 from os import path
-from flask import flash
 import requests
 from loguru import logger
+import uvicorn
+from fastapi import FastAPI, Request, File, Form, UploadFile
+from fastapi.responses import UJSONResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
+import shutil, aiofiles
 
+# from aiofiles import open
 
-deepstack_host_address = os.getenv("DEEPSTACK_HOST_ADDRESS")
+deepstack_host_address = 'http://192.168.0.252:5002'
 deepstack_api_key = os.getenv("DEEPSTACK_API_KEY")
-min_confidence = os.getenv("MIN_CONFIDANCE")
+min_confidence = 0.7
 
 if not min_confidence:
     min_confidence=0.70
@@ -23,10 +30,6 @@ logger.info("Minimum Confidence value set to: " + str(min_confidence))
 logger.info("Deepstack api key set to: " + str(deepstack_api_key))
 
 logger.info("#########################################")
-
-
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = "./"
 
 def teachme(person,image_file):
     user_image = open(image_file,"rb").read()
@@ -67,67 +70,62 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in "jpg,png,gif,bmp,jpeg"
 
-@app.route('/teach', methods=['POST'])
-def teach():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        person = str(request.form['teach-name'])
-        if 'teach-file' not in request.files:
-            return jsonify('{"error":"No file found in posted data","success":"false"}')
-        file = request.files['teach-file']
-        if file.filename == '':
-            return jsonify('{"error":"File can not be empty","success":"false"}')
-        if not allowed_file(file.filename):
-            return jsonify('{"error":"File type not supported","success":"false"}')
-        if not person:
-            return jsonify('{"error":"Pleas enter person name","success":"false"}')
+
+# app = FastAPI(docs_url="/swagger", openapi_tags=tags_metadata)
+app = FastAPI(title="Deepstack Trainer", description="Train your deepstack AI server", version="1.0.0")
+app.mount("/dist", StaticFiles(directory="dist"), name="dist")
+app.mount("/js", StaticFiles(directory="dist/js"), name="js")
+app.mount("/css", StaticFiles(directory="dist/css"), name="css")
+app.mount("/img", StaticFiles(directory="dist/img"), name="css")
+# app.mount("/plugins", StaticFiles(directory="plugins"), name="plugins")
+templates = Jinja2Templates(directory="templates/")
 
 
-        if file and allowed_file(file.filename):
-            filename = file.filename
-            image_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(image_file)
+
+@app.post('/teach')
+def teach(person: str = Form(...) ,teach_file: UploadFile = File(...)):
+    try:
+        if teach_file and allowed_file(teach_file.filename):
+            image_file = os.path.join('./', teach_file.filename)
+            with open(image_file, "wb") as buffer:
+                shutil.copyfileobj(teach_file.file, buffer)
             response = teachme(person,image_file)
             success = str(response['success']).lower()
-            if os.path.exists(image_file):
+            if os.path.exists(image_file) and success.lower() == 'false':
                 os.remove(image_file)
             if 'message' in str(response):
                 message = response['message']
-                return jsonify('{"message":"'+message+'","success":"'+success+'"}')
+                return JSONResponse(content = '{"message":"'+message+'","success":"'+success+'"}')
             if 'error' in str(response):
                 error = response['error']
-                return jsonify('{"error":"'+error+'","success":"'+success+'"}')
+                return JSONResponse(content = '{"error":"'+error+'","success":"'+success+'"}')
             return response
+    except Exception as e:
+        error = "Aw Snap! something went wrong"
+        return JSONResponse(content = '{"error":"'+error+'","success":"false"}')
 
 
 
-@app.route('/who', methods=['POST'])
-def who():
-    image_file = ""
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'who-file' not in request.files:
-            return jsonify('{"error":"No file found in posted data","success":"false"}')
-        file = request.files['who-file']
-        if file.filename == '':
-            return jsonify('{"error":"File can not be empty","success":"false"}')
-        if not allowed_file(file.filename):
-            return jsonify('{"error":"File type not supported","success":"false"}')
-        try:
-            if file and allowed_file(file.filename):
-                filename = file.filename
-                image_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(image_file)
-                response = getFaces(image_file)
-                return jsonify('{"message":"The person in the picture is ' + response + '","success":"true"}')
-        except Exception as e:
-            return jsonify('{"error":"'+ str(e)  +'","success":"false"}')
-        finally:
-            if os.path.exists(image_file):
-                os.remove(image_file)
+@app.post('/who')
+def who(who_file: UploadFile = File(...)):
+    try:
+        if who_file and allowed_file(who_file.filename):
+            filename = who_file.filename
+            image_file = os.path.join('./', filename)
+            with open(image_file, "wb") as buffer:
+                shutil.copyfileobj(who_file.file, buffer)
+            response = getFaces(image_file)
+            if response == '"" ,':
+                response='unknown'
+            return JSONResponse(content = '{"message":"The person in the picture is ' + str(response) + '","success":"true"}')
+    except Exception as e:
+        return JSONResponse(content = '{"error":"'+ str(e)  +'","success":"false"}')
+    finally:
+        if os.path.exists(image_file):
+            os.remove(image_file)
 
 
-@app.route('/detect', methods=['POST'])
+@app.post('/detect')
 def detect():
     image_file = ""
     if request.method == 'POST':
@@ -141,7 +139,7 @@ def detect():
         try:
             if file and allowed_file(file.filename):
                 filename = file.filename
-                image_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                image_file = os.path.join('./', filename)
                 file.save(image_file)
                 response = detection(image_file)
                 return jsonify('{"message":"The objects in the picture are ' + response + '","success":"true"}')
@@ -151,7 +149,7 @@ def detect():
             if os.path.exists(image_file):
                 os.remove(image_file)
 
-@app.route('/scene', methods=['POST'])
+@app.post('/scene')
 def scene():
     image_file = ""
     if request.method == 'POST':
@@ -166,7 +164,7 @@ def scene():
         try:
             if file and allowed_file(file.filename):
                 filename = file.filename
-                image_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                image_file = os.path.join('./', filename)
                 file.save(image_file)
                 response = detect_scene(image_file)
                 return jsonify('{"message":"The objects in the picture are ' + response + '","success":"true"}')
@@ -176,37 +174,13 @@ def scene():
             if os.path.exists(image_file):
                 os.remove(image_file)
 
-@app.route('/', methods=['GET'])
-def home():
-    return render_template('index.html')
 
+@app.get("/")
+def home(request: Request):
+    return templates.TemplateResponse('index.html', context={'request': request})
 
-
-# region Serving Static Files
-
-# Serve Javascript
-@app.route('/js/<path:path>')
-def send_js(path):
-    return send_from_directory('dist/js', path)
-
-# Serve CSS
-@app.route('/css/<path:path>')
-def send_css(path):
-    return send_from_directory('dist/css', path)
-
-# Serve Images
-@app.route('/img/<path:path>')
-def send_img(path):
-    return send_from_directory('dist/img', path)
-
-# Serve Fonts
-@app.route('/webfonts/<path:path>')
-def send_webfonts(path):
-    return send_from_directory('dist/webfonts', path)
-
-# endregion
 
 
 # Start Application
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+    uvicorn.run(app)
