@@ -23,7 +23,7 @@ RUN  pip3 install --upgrade pip --no-cache-dir && \
      pip3 install python-multipart --no-cache-dir && \
      pip3 install requests --no-cache-dir
      
- RUN mkdir -p /opt/trainer
+ RUN mkdir -p /opt/trainer/photos
  
  COPY trainer /opt/trainer
  

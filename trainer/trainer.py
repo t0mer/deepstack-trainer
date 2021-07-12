@@ -71,6 +71,12 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in "jpg,png,gif,bmp,jpeg"
 
 
+def SaveImage(file, path):
+    with open(path, "wb") as buffer:
+        shutil.copyfileobj(file, buffer)
+
+
+
 # app = FastAPI(docs_url="/swagger", openapi_tags=tags_metadata)
 app = FastAPI(title="Deepstack Trainer", description="Train your deepstack AI server", version="1.0.0")
 app.mount("/dist", StaticFiles(directory="dist"), name="dist")
@@ -86,9 +92,8 @@ templates = Jinja2Templates(directory="templates/")
 def teach(person: str = Form(...) ,teach_file: UploadFile = File(...)):
     try:
         if teach_file and allowed_file(teach_file.filename):
-            image_file = os.path.join('./', teach_file.filename)
-            with open(image_file, "wb") as buffer:
-                shutil.copyfileobj(teach_file.file, buffer)
+            image_file = os.path.join('./photos', teach_file.filename)
+            SaveImage(teach_file.file, image_file)
             response = teachme(person,image_file)
             success = str(response['success']).lower()
             if os.path.exists(image_file) and success.lower() == 'false':
@@ -111,10 +116,10 @@ def who(who_file: UploadFile = File(...)):
     try:
         if who_file and allowed_file(who_file.filename):
             filename = who_file.filename
-            image_file = os.path.join('./', filename)
-            with open(image_file, "wb") as buffer:
-                shutil.copyfileobj(who_file.file, buffer)
+            image_file = os.path.join('./photos', filename)
+            SaveImage(who_file.file, image_file)
             response = getFaces(image_file)
+            logger.info(response)
             if response == '"" ,':
                 response='unknown'
             return JSONResponse(content = '{"message":"The person in the picture is ' + str(response) + '","success":"true"}')
@@ -124,55 +129,41 @@ def who(who_file: UploadFile = File(...)):
         if os.path.exists(image_file):
             os.remove(image_file)
 
-
+ 
 @app.post('/detect')
-def detect():
-    image_file = ""
-    if request.method == 'POST':
-        if 'detect-file' not in request.files:
-            return jsonify('{"error":"No file found in posted data","success":"false"}')
-        file = request.files['detect-file']
-        if file.filename == '':
-            return jsonify('{"error":"File can not be empty","success":"false"}')
-        if not allowed_file(file.filename):
-            return jsonify('{"error":"File type not supported","success":"false"}')
-        try:
-            if file and allowed_file(file.filename):
-                filename = file.filename
-                image_file = os.path.join('./', filename)
-                file.save(image_file)
-                response = detection(image_file)
-                return jsonify('{"message":"The objects in the picture are ' + response + '","success":"true"}')
-        except Exception as e:
-            return jsonify('{"error":"'+ str(e)  +'","success":"false"}')
-        finally:
-            if os.path.exists(image_file):
-                os.remove(image_file)
+def detect(detect_file: UploadFile = File(...)):
+    try:
+        if detect_file and allowed_file(detect_file.filename):
+            filename = detect_file.filename
+            image_file = os.path.join('./photos', filename)
+            SaveImage(detect_file.file, image_file)
+            response = detection(image_file)
+            if response == '"" ,':
+                response='unknown'
+            return JSONResponse(content = '{"message":"The objects in the picture are ' + str(response) + '","success":"true"}')
+    except Exception as e:
+        return JSONResponse(content = '{"error":"'+ str(e)  +'","success":"false"}')
+    finally:
+        if os.path.exists(image_file):
+            os.remove(image_file)
+
 
 @app.post('/scene')
-def scene():
-    image_file = ""
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'scene-file' not in request.files:
-            return jsonify('{"error":"No file found in posted data","success":"false"}')
-        file = request.files['scene-file']
-        if file.filename == '':
-            return jsonify('{"error":"File can not be empty","success":"false"}')
-        if not allowed_file(file.filename):
-            return jsonify('{"error":"File type not supported","success":"false"}')
-        try:
-            if file and allowed_file(file.filename):
-                filename = file.filename
-                image_file = os.path.join('./', filename)
-                file.save(image_file)
-                response = detect_scene(image_file)
-                return jsonify('{"message":"The objects in the picture are ' + response + '","success":"true"}')
-        except Exception as e:
-            return jsonify('{"error":"'+ str(e)  +'","success":"false"}')
-        finally:
-            if os.path.exists(image_file):
-                os.remove(image_file)
+def scene(scene_file: UploadFile = File(...)):
+    try:
+        if scene_file and allowed_file(scene_file.filename):
+            filename = scene_file.filename
+            image_file = os.path.join('./photos', filename)
+            SaveImage(scene_file.file, image_file)
+            response = detect_scene(image_file)
+            if response == '"" ,':
+                response='unknown'
+            return JSONResponse(content = '{"message":"The objects in the picture are ' + str(response) + '","success":"true"}')
+    except Exception as e:
+        return JSONResponse(content = '{"error":"'+ str(e)  +'","success":"false"}')
+    finally:
+        if os.path.exists(image_file):
+            os.remove(image_file)
 
 
 @app.get("/")
