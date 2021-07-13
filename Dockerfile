@@ -23,10 +23,12 @@ RUN  pip3 install --upgrade pip --no-cache-dir && \
      pip3 install python-multipart --no-cache-dir && \
      pip3 install requests --no-cache-dir
      
- RUN mkdir -p /opt/trainer/photos
+RUN mkdir -p /opt/trainer/photos/uploads
  
- COPY trainer /opt/trainer
+COPY trainer /opt/trainer
  
- EXPOSE 8080
+EXPOSE 8080
  
- ENTRYPOINT ["/usr/bin/python3", "/opt/trainer/trainer.py"]
+WORKDIR /opt/trainer/
+ 
+ENTRYPOINT ["/usr/bin/python3", "trainer.py"]

@@ -1,4 +1,3 @@
-
 import os, json
 from os import environ
 from os import path
@@ -15,21 +14,14 @@ import shutil, aiofiles
 
 # from aiofiles import open
 
-deepstack_host_address = 'http://192.168.0.252:5002'
+deepstack_host_address = os.getenv("DEEPSTACK_HOST_ADDRESS")
 deepstack_api_key = os.getenv("DEEPSTACK_API_KEY")
-min_confidence = 0.7
+min_confidence = os.getenv("MIN_CONFIDANCE")
 
 if not min_confidence:
     min_confidence=0.70
 else:
     min_confidence=float(min_confidence)
-
-logger.info("#########################################")
-logger.info("Deepstack Host Address set to: " + str(deepstack_host_address))
-logger.info("Minimum Confidence value set to: " + str(min_confidence))
-logger.info("Deepstack api key set to: " + str(deepstack_api_key))
-
-logger.info("#########################################")
 
 def teachme(person,image_file):
     user_image = open(image_file,"rb").read()
@@ -38,7 +30,6 @@ def teachme(person,image_file):
         response = requests.post("{}/v1/vision/face/register".format(deepstack_host_address), files={"image1":user_image},data={"userid":person}).json()
     else:
         response = requests.post("{}/v1/vision/face/register".format(deepstack_host_address), files={"image1":user_image},data={"userid":person,"admin_key":"{}}".format(deepstack_api_key)}).json()
-    # os.remove(image_file)
     return response
 
 def detection(photo_path):
@@ -174,4 +165,4 @@ def home(request: Request):
 
 # Start Application
 if __name__ == '__main__':
-    uvicorn.run(app)
+    uvicorn.run(app, host="0.0.0.0", port=8080)
