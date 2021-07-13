@@ -23,10 +23,12 @@ RUN  pip3 install --upgrade pip --no-cache-dir && \
      pip3 install python-multipart --no-cache-dir && \
      pip3 install requests --no-cache-dir
      
- RUN mkdir -p /opt/trainer/photos
+ RUN mkdir -p /opt/trainer/photos/uploads
  
  COPY trainer /opt/trainer
  
  EXPOSE 8080
  
- ENTRYPOINT ["/usr/bin/python3", "/opt/trainer/trainer.py"]
+ WORKDIR /opt/trainer/
+ 
+ ENTRYPOINT ["/usr/local/bin/uvicorn", "trainer:app --port 8080 --host 0.0.0.0  --workers 1"]
