@@ -29,5 +29,5 @@ COPY trainer /app/trainer
  
 EXPOSE 8080
  
-CMD ["uvicorn", "app.trainer:app", "--host", "0.0.0.0", "--port", "8080", "--workers !"]
+CMD ["uvicorn", "app.trainer:app", "--host", "0.0.0.0", "--port", "8080"]
 #ENTRYPOINT ["/usr/local/bin/uvicorn", "trainer:app --port 8080 --host 0.0.0.0  --workers 1"]
