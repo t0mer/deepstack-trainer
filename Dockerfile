@@ -24,6 +24,7 @@ RUN  pip3 install --upgrade pip --no-cache-dir && \
      pip3 install requests --no-cache-dir
      
 RUN mkdir -p /opt/trainer/photos/uploads
+RUN mkdir -p /opt/trainer/db
  
 COPY trainer /opt/trainer
  
