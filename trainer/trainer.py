@@ -1,5 +1,9 @@
 import os, json, requests, uvicorn, uuid
+<<<<<<< Updated upstream
 import shutil, aiofiles, sqlite3
+=======
+import shutil, aiofiles, sqlite3, base64
+>>>>>>> Stashed changes
 from os import environ, path
 from loguru import logger
 from fastapi import FastAPI, Request, File, Form, UploadFile
@@ -99,9 +103,13 @@ def insertBLOB(name, photo):
         logger.info("Connected to SQLite")
         sqlite_insert_blob_query = """ INSERT INTO images
                                   (name, photo) VALUES (?, ?)"""
+<<<<<<< Updated upstream
 
         empPhoto = convertToBinaryData(photo)
         data_tuple = (name, empPhoto)
+=======
+        data_tuple = (name, os.path.basename(photo))
+>>>>>>> Stashed changes
         cur.execute(sqlite_insert_blob_query, data_tuple)
         con.commit()
         logger.info("Image and file inserted successfully as a BLOB into a table")
@@ -120,19 +128,34 @@ def InitDB():
     logger.info("Initializing Database")
     con = sqlite3.connect(db_path)
     cur = con.cursor()
+<<<<<<< Updated upstream
     cur.execute('CREATE TABLE IF NOT EXISTS images (name TEXT NOT NULL, photo BLOB NOT NULL);')
     con.commit()
     con.close()
     
 
 
+=======
+    cur.execute('CREATE TABLE IF NOT EXISTS images (name TEXT NOT NULL, photo TEXT NOT NULL, dt datetime default current_timestamp);')
+    con.commit()
+    con.close()
+    
+def delete_image(image_file):
+    if os.path.exists(image_file):
+        os.remove(image_file)
+>>>>>>> Stashed changes
 
 logger.info("Configuring app")
 app = FastAPI(title="Deepstack Trainer", description="Train your deepstack AI server", version="1.0.0")
 app.mount("/dist", StaticFiles(directory="dist"), name="dist")
 app.mount("/js", StaticFiles(directory="dist/js"), name="js")
 app.mount("/css", StaticFiles(directory="dist/css"), name="css")
+<<<<<<< Updated upstream
 app.mount("/img", StaticFiles(directory="dist/img"), name="css")
+=======
+app.mount("/img", StaticFiles(directory="dist/img"), name="img")
+app.mount("/uploads", StaticFiles(directory="photos/uploads"), name="img")
+>>>>>>> Stashed changes
 templates = Jinja2Templates(directory="templates/")
 
 @app.post('/teach')
@@ -141,7 +164,11 @@ def teach(person: str = Form(...) ,teach_file: UploadFile = File(...)):
     try:
         InitDB()
         if teach_file and allowed_file(teach_file.filename):
+<<<<<<< Updated upstream
             image_file = os.path.join('./photos', generate_file_name(teach_file.filename))
+=======
+            image_file = os.path.join('./photos/uploads', generate_file_name(teach_file.filename))
+>>>>>>> Stashed changes
             SaveImage(teach_file.file, image_file)
             logger.info("Sending the image to deepstack server")
             response = teachme(person,image_file)
@@ -149,14 +176,23 @@ def teach(person: str = Form(...) ,teach_file: UploadFile = File(...)):
             if 'message' in str(response):
                 message = response['message']
                 logger.info("Saving image to Database")
+<<<<<<< Updated upstream
                 insertBLOB(person,image_file)
+=======
+                if success=='true':
+                    insertBLOB(person,image_file)
+                else:
+                    delete_image(image_file)
+>>>>>>> Stashed changes
                 return JSONResponse(content = '{"message":"'+message+'","success":"'+success+'"}')
             if 'error' in str(response):
+                delete_image(image_file)
                 error = response['error']
                 logger.error("Unable to learn " + error)
                 return JSONResponse(content = '{"error":"'+error+'","success":"'+success+'"}')
             return response
     except Exception as e:
+<<<<<<< Updated upstream
         error = "Aw Snap! something went wrong"
         return JSONResponse(content = '{"error":"'+error+'","success":"false"}')
     finally:
@@ -228,6 +264,11 @@ def scene(scene_file: UploadFile = File(...)):
         logger.info("Deleting file to save space")
         if os.path.exists(image_file):
             os.remove(image_file)
+=======
+        delete_image(image_file)
+        error = "Aw Snap! something went wrong"
+        return JSONResponse(content = '{"error":"'+error+'","success":"false"}')
+>>>>>>> Stashed changes
 
 @app.get("/")
 def home(request: Request):
@@ -235,6 +276,92 @@ def home(request: Request):
     logger.info("loading default page")
     return templates.TemplateResponse('index.html', context={'request': request})
 
+<<<<<<< Updated upstream
+=======
+@app.post('/who')
+def who(who_file: UploadFile = File(...)):
+    logger.info("Starting face detection")
+    try:
+        InitDB()
+        if who_file and allowed_file(who_file.filename):
+            filename = who_file.filename
+            image_file = os.path.join('./photos', filename)
+            SaveImage(who_file.file, image_file)
+            logger.info("sending image to Deepstack server")
+            response = getFaces(image_file)
+            if response == '"" ,':
+                response='unknown'
+            return JSONResponse(content = '{"message":"The person in the picture is ' + str(response) + '","success":"true"}')
+    except Exception as e:
+        logger.error("Face Detection error " + str(e) )
+        return JSONResponse(content = '{"error":"'+ str(e)  +'","success":"false"}')
+    finally:
+        logger.info("Deleting file to save space")
+        delete_image(image_file)
+ 
+@app.post('/detect')
+def detect(detect_file: UploadFile = File(...)):
+    logger.info("Starting object detection")
+    try:
+        InitDB()
+        if detect_file and allowed_file(detect_file.filename):
+            filename = detect_file.filename
+            image_file = os.path.join('./photos', filename)
+            logger.info("sending image to Deepstack server")
+            SaveImage(detect_file.file, image_file)
+            response = detection(image_file)
+            if response == '"" ,':
+                response='unknown'
+            return JSONResponse(content = '{"message":"The objects in the picture are ' + str(response) + '","success":"true"}')
+    except Exception as e:
+        logger.error("Object Detection error " + str(e))
+        return JSONResponse(content = '{"error":"'+ str(e)  +'","success":"false"}')
+    finally:
+        logger.info("Deleting file to save space")
+        delete_image(image_file)
+
+@app.post('/scene')
+def scene(scene_file: UploadFile = File(...)):
+    logger.info("Starting scene detection")
+    try:
+        InitDB()
+        if scene_file and allowed_file(scene_file.filename):
+            filename = scene_file.filename
+            image_file = os.path.join('./photos', filename)
+            logger.info("sending image to Deepstack server")
+            SaveImage(scene_file.file, image_file)
+            response = detect_scene(image_file)
+            if response == '"" ,':
+                response='unknown'
+            return JSONResponse(content = '{"message":"The objects in the picture are ' + str(response) + '","success":"true"}')
+    except Exception as e:
+        logger.error("Object Detection error " + str(e))
+        return JSONResponse(content = '{"error":"'+ str(e)  +'","success":"false"}')
+    finally:
+        logger.info("Deleting file to save space")
+        delete_image(image_file)
+
+@app.get("/")
+def home(request: Request):
+    InitDB()
+    logger.info("loading default page")
+    return templates.TemplateResponse('index.html', context={'request': request})
+
+@app.get("/api/images")
+def get_images(request: Request):
+    try:
+        with sqlite3.connect(db_path, check_same_thread=False) as con:
+            cur = con.cursor()
+            cur.execute('SELECT * FROM images order by dt')
+            return cur.fetchall()
+            # htmlstr = ""
+            # for row in result:
+            #     htmlstr = htmlstr + "### Prson: " + row[0] + " -- Photo: " + row[1] + " ### " 
+            # return htmlstr #templates.TemplateResponse('images.html', context={'request': request, 'rows': result})
+    except Exception as e:
+        logger.error("Error fetch images from database " + str(e))
+        return None
+>>>>>>> Stashed changes
 
 
 # Start Application
