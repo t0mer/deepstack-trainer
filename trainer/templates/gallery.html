@@ -1,0 +1,10 @@
+{% for image in images %}
+<div class="responsive">
+    <div class="gallery">
+      <a target="_blank" href="/uploads/{{ image[1] }}">
+        <img src="/uploads/{{ image[1] }}" alt="{{ image[0] }}" width="600" height="400">
+      </a>
+      <div class="desc">{{ image[0] }}</div>
+    </div>
+  </div>
+{% endfor %}
