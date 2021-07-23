@@ -46,6 +46,7 @@ jobs:
           tags: |
             techblog/deepstack-trainer:latest
             techblog/deepstack-trainer:1.0.0
+          build-args: |
             BUILD_DATE=${{ steps.getDate.outputs.date }}
             VERSION=${{ steps.getSemver.outputs.semver }}
           cache-from: |
