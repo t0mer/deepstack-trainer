@@ -45,8 +45,7 @@ jobs:
           push: true
           tags: |
             techblog/deepstack-trainer:latest
-            techblog/deepstack-trainer:${{ steps.getSemver.outputs.semver }}
-          build-args: |
+            techblog/deepstack-trainer:1.0.0
             BUILD_DATE=${{ steps.getDate.outputs.date }}
             VERSION=${{ steps.getSemver.outputs.semver }}
           cache-from: |
