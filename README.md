@@ -11,7 +11,7 @@
 
 DeepStack’s source code is available on GitHub via [https://github.com/johnolafenwa/DeepStack](https://github.com/johnolafenwa/DeepStack/)
 
-[DeepStack Trainer](https://github.com/t0mer/deepstack-trainer) is a [Flask](https://flask.palletsprojects.com/en/1.1.x/) powerd web application that helps us train and test Deepstack AI easelly as possible.
+[DeepStack Trainer](https://github.com/t0mer/deepstack-trainer) is a [FastAPI](https://fastapi.tiangolo.co) powerd web application that helps us train and test Deepstack AI easelly as possible.
 
 ## Features
 - Face Registring.
@@ -72,6 +72,10 @@ services:
       - MIN_CONFIDANCE=
     ports:
       - "8080:8080" 
+    volumes:
+      - ./deepstack-trainer/db:/opt/trainer/db #Database storing the uploaded photos data (Filename, Person name, Date).
+      - ./deepstack-trainer/uploads:/opt/trainer/photos/uploads #Phisical path for storing the images
+      
 ```
 
 Basic Parameters:
