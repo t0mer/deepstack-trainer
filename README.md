@@ -18,9 +18,10 @@ DeepStack’s source code is available on GitHub via [https://github.com/johnola
 - Test face recognition.
 - Test scene recognition.
 - Test object detection.
+- Gallery page, display all uploaded images (For traning only).
 
 ## Components used in Deepstack Trainer
-- [Flask](https://flask.palletsprojects.com/en/1.1.x/) - For running web server
+- [FastAPI](https://fastapi.tiangolo.com/) - For running web server
 - [materializecss](https://materializecss.com/) - For web forms
 - [sweetalert2](https://sweetalert2.github.io/) - For alerts and messages
 
@@ -92,6 +93,9 @@ After the docker is up and running, open your browser and navigate to your Deeps
 
 * Scene Detection
 [![Scene Detection](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/scene%20detection.png?raw=true "Scene Detection")](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/scene%20detection.png?raw=true "Scene Detection")
+
+* Photo Gallery
+[![Scene Detection](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/gallery.png?raw=true "Scene Detection")](https://github.com/t0mer/deepstack-trainer/blob/main/screenshots/gallery.png?raw=true "Scene Detection")
 
 # Integrations and Community
 The DeepStack ecosystem includes a number of popular integrations and libraries built to expand the functionalities of the AI engine to serve IoT, industrial, monitoring and research applications. A number of them are listed below

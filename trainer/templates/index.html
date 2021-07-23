@@ -31,6 +31,7 @@
                             <li class="tab col s1"><a class=" white-text regular" href="#who">Face Recognition</a></li>
                             <li class="tab col s1"><a class=" white-text regular" href="#analyze">Object Detection</a></li>
                             <li class="tab col s1"><a class=" white-text regular" href="#scene">Scene Detection</a></li>
+                            <li class="tab col s1"><a class=" white-text regular" href="#gallery" id="gallerytab">Gallery</a></li>
 
 
                         </ul>
@@ -55,8 +56,8 @@
                                 <label>&nbsp;</label>
                                 <div class="input-group">
                                     <span class="input-group-btn">
-                                        <span class="btn btn-primary btn-file">
-                                            Browse… <input type="file" id="teach-file" name="teach-file" class="imgfile">
+                                        <span class="btn btn-primary btn_file">
+                                            Browse… <input type="file" id="teach_file" name="teach_file" class="imgfile">
                                         </span>
                                     </span>
                                     <input type="text" class="form-control" readonly>
@@ -67,7 +68,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                    <label> Who is in the picture?</label>
-                                    <input type="text" class="form-control" name="teach-name" id="teach-name" placeholder="Please enter the name of the person in the image">
+                                    <input type="text" class="form-control" name="person" id="person" placeholder="Please enter the name of the person in the image">
                                 </div>
             
                             </div>
@@ -90,8 +91,8 @@
                                 <label>&nbsp;</label>
                                 <div class="input-group">
                                     <span class="input-group-btn">
-                                        <span class="btn btn-primary btn-file">
-                                            Browse… <input type="file" id="who-file" name="who-file"  class="imgfile">
+                                        <span class="btn btn-primary btn_file">
+                                            Browse… <input type="file" id="who_file" name="who_file"  class="imgfile">
                                         </span>
                                     </span>
                                     <input type="text" class="form-control" readonly>
@@ -119,8 +120,8 @@
                                 <label>&nbsp;</label>
                                 <div class="input-group">
                                     <span class="input-group-btn">
-                                        <span class="btn btn-primary btn-file">
-                                            Browse… <input type="file" id="detect-file" name="detect-file"  class="imgfile">
+                                        <span class="btn btn-primary btn_file">
+                                            Browse… <input type="file" id="detect_file" name="detect_file"  class="imgfile">
                                         </span>
                                     </span>
                                     <input type="text" class="form-control" readonly>
@@ -139,8 +140,6 @@
                 </form>
 
             </div>
-
-
             <div id="scene" class="col s12">
                
                 <form method="post" enctype="multipart/form-data" id="scene-form">
@@ -150,8 +149,8 @@
                                 <label>&nbsp;</label>
                                 <div class="input-group">
                                     <span class="input-group-btn">
-                                        <span class="btn btn-primary btn-file">
-                                            Browse… <input type="file" id="scene-file" name="scene-file"  class="imgfile">
+                                        <span class="btn btn-primary btn_file">
+                                            Browse… <input type="file" id="scene_file" name="scene_file"  class="imgfile">
                                         </span>
                                     </span>
                                     <input type="text" class="form-control" readonly>
@@ -170,7 +169,14 @@
                 </form>
 
             </div>
+            <div id="gallery" class="col s12">
 
+
+
+
+
+                  <div class="clearfix"></div>
+            </div>
 
         </div>
     </div>

@@ -14,15 +14,22 @@ RUN apt -yqq install python3-pip
     
 RUN  pip3 install --upgrade pip --no-cache-dir && \
      pip3 install --upgrade setuptools --no-cache-dir && \
-     pip3 install flask --no-cache-dir && \
+     pip3 install fastapi  --no-cache-dir && \
+     pip3 install uvicorn  --no-cache-dir && \
+     pip3 install jinja2  --no-cache-dir && \
+     pip3 install aiofiles  --no-cache-dir && \
      pip3 install loguru --no-cache-dir && \
      pip3 install cryptography --no-cache-dir && \
+     pip3 install python-multipart --no-cache-dir && \
      pip3 install requests --no-cache-dir
      
- RUN mkdir -p /opt/trainer
+RUN mkdir -p /opt/trainer/photos/uploads
+RUN mkdir -p /opt/trainer/db
  
- COPY trainer /opt/trainer
+COPY trainer /opt/trainer
  
- EXPOSE 8080
+EXPOSE 8080
  
- ENTRYPOINT ["/usr/bin/python3", "/opt/trainer/trainer.py"]
+WORKDIR /opt/trainer/
+ 
+ENTRYPOINT ["/usr/bin/python3", "trainer.py"]
