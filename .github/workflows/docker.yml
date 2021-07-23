@@ -43,9 +43,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: |
-            techblog/deepstack-trainer:latest
-            techblog/deepstack-trainer:1.0.0
+          tags: techblog/deepstack-trainer:${{ steps.getSemver.outputs.semver }}
           build-args: |
             BUILD_DATE=${{ steps.getDate.outputs.date }}
             VERSION=${{ steps.getSemver.outputs.semver }}
