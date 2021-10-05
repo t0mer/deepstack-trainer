@@ -1,10 +1,17 @@
 {% for image in images %}
-<div class="responsive">
+<div class="responsive {{ image[1] }}">
     <div class="gallery">
       <a target="_blank" href="/uploads/{{ image[1] }}">
         <img src="/uploads/{{ image[1] }}" alt="{{ image[0] }}" width="600" height="400">
       </a>
-      <div class="desc">{{ image[0] }}</div>
+      <div style="display: inline-block;width: 19px;margin-left:10px;">
+        <img src="img/delete.png" style="width: 14px;height: 14px" title="delete" alt="delete" class="delbtn" data-img="{{ image[1] }}"></div>
+
+
+      <div style="display: inline-block;width: 19px;margin-left:10px;">
+        <img src="img/save.png" style="width: 14px;height: 14px;display:none" title="save" alt="save" class="savbtn"></div>
+      <div class="desc" contenteditable="true" id="{{ image[1] }}" style="display:inline-block">{{ image[0] }}</div>
+
     </div>
   </div>
 {% endfor %}

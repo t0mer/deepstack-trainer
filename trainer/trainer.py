@@ -122,9 +122,15 @@ def InitDB():
     con.commit()
     con.close()
     
+
+
 def delete_image(image_file):
     if os.path.exists(image_file):
         os.remove(image_file)
+        return True
+    else:
+        return False
+
 
 logger.info("Configuring app")
 app = FastAPI(title="Deepstack Trainer", description="Train your deepstack AI server", version="1.0.0")
@@ -228,6 +234,49 @@ def scene(scene_file: UploadFile = File(...)):
     finally:
         logger.info("Deleting file to save space")
         delete_image(image_file)
+
+
+@app.post('/api/rename')
+async def rename(request: Request ):
+    data = await request.json()
+    try:
+        InitDB()
+        conn = sqlite3.connect(db_path)
+        sql = ''' UPDATE images
+              SET name = ? 
+               WHERE photo = ?'''
+        cur = conn.cursor()
+        cur.execute(sql, (data['text'], data['img']))
+        conn.commit()
+        return JSONResponse(content = '{"message":"Person renamed","success":"true"}')
+    except Exception as e:
+        error = "Aw Snap! something went wrong " + str(e)
+        logger.error(error)
+        return JSONResponse(content = '{"error":"'+error+'","success":"false"}')
+
+
+@app.post('/api/delete')
+async def delete(request: Request):
+    logger.info("Deleting")
+    data = await request.json()
+    try:
+        image_file = os.path.join('./photos/uploads', data['img'])
+        logger.debug('########## ' + image_file)
+        if delete_image(image_file) == True:
+            InitDB()
+            conn = sqlite3.connect(db_path)
+            sql = 'DELETE from images WHERE photo = "' + data['img'] + '"'
+            cur = conn.cursor()
+            cur.execute(sql)
+            conn.commit()
+            return JSONResponse(content = '{"message":"Image Deleted","success":"true"}')
+        else:
+            return JSONResponse(content = '{"error":"Unable to delete image","success":"false"}')
+    except Exception as e:
+        error = "Aw Snap! something went wrong " + str(e)
+        logger.error(error)
+        return JSONResponse(content = '{"error":"'+error+'","success":"false"}')
+
 
 @app.get("/")
 def home(request: Request):

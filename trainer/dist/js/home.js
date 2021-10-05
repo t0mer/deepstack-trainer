@@ -5,9 +5,92 @@ $(document).on('change', '.btn_file :file', function () {
 });
 
 
+$(document).on('click', '.savbtn', function () {
+    var text = $(this).parent().next('.desc').text();
+    var id = $(this).parent().next('.desc').attr('id');
+    Swal.fire({
+        title: 'Do you want to save the changes?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Save',
+        denyButtonText: `Don't save`,
+    }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            //   
+            $.ajax({
+                url: '/api/rename',
+                // dataType: 'json',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({ text: text, img: id }),
+                processData: false,
+                success: function (data, textStatus, jQxhr) {
+                    data = JSON.parse(data)
+                    if (data.success == "true")
+                    {
+                      Swal.fire('Saved!', '', 'success');    
+                    }
+                    else
+                    {
+                        Swal.fire('Changes are not saved', '', 'error');
+                    }
+                    load_gallery();
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                    Swal.fire('Changes are not saved', '', 'error');
+                }
+            });
 
+        } else if (result.isDenied) {
+            Swal.fire('Changes are not saved', '', 'info');
+        }
+    })
+});
 
+$(document).on('click', '.delbtn', function () {
+    var id = $(this).data('img');
+    Swal.fire({
+        title: 'Do you want to delete the image?',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: 'Delete',
+        denyButtonText: `Don't Delete`,
+    }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            //   Swal.fire('Saved!', '', 'success')
+            $.ajax({
+                url: '/api/delete',
+                // dataType: 'json',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({img: id }),
+                processData: false,
+                success: function (data, textStatus, jQxhr) {
+                    data = JSON.parse(data)
+                    if (data.success == "true")
+                    {
+                      Swal.fire('Image was deleted!', '', 'success');
+                      
+                    }
+                    else{
+                      Swal.fire('Image was not deleted', '', 'error');
+                    }
+                    
+                    load_gallery();
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    Swal.fire('Image was not deleted', '', 'error');
+                }
+            });
 
+        } else if (result.isDenied) {
+            Swal.fire('Image was not deleted', '', 'info');
+        }
+    })
+});
 
 $('.btn_file :file').on('fileselect', function (event, label) {
     var input = $(this).parents('.input-group').find(':text'),
@@ -73,20 +156,29 @@ function load_gallery() {
             success: function (data) {
 
                 $('#gallery').html(data)
+                $('.desc').each(function () {
+                    this.addEventListener('input', function () {
+                        $(this).prev().find('img').show();
+                    });
 
+
+                });
 
             },
             error: function (e) {
 
             }
         });
+
+
+
 }
 
 
 $(document).ready(function () {
 
 
-    $('#gallerytab').click(function(){
+    $('#gallerytab').click(function () {
         load_gallery();
     });
 
@@ -94,8 +186,6 @@ $(document).ready(function () {
         var action = $(this).attr('id').split("_")[0];
         readURL(this, '#' + action + '-img');
     });
-
-
 
 
 
