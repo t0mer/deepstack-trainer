@@ -27,27 +27,39 @@ def teachme(person,image_file):
     if not deepstack_api_key:
         response = requests.post("{}/v1/vision/face/register".format(deepstack_host_address), files={"image1":user_image},data={"userid":person}).json()
     else:
-        response = requests.post("{}/v1/vision/face/register".format(deepstack_host_address), files={"image1":user_image},data={"userid":person,"admin_key":"{}}".format(deepstack_api_key)}).json()
+        response = requests.post("{}/v1/vision/face/register".format(deepstack_host_address), files={"image1":user_image},data={"userid":person,"api_key":deepstack_api_key}).json()
     return response
 
 def detection(photo_path):
     image_data = open(photo_path,"rb").read()
-    response = requests.post("{}/v1/vision/detection".format(deepstack_host_address),files={"image":image_data}, data={"min_confidence":0.70}).json()
     objects = ""
+    response = ""
+    if not deepstack_api_key:
+        response = requests.post("{}/v1/vision/detection".format(deepstack_host_address),files={"image":image_data}, data={"min_confidence":min_confidence}).json()
+    else:
+        response = requests.post("{}/v1/vision/detection".format(deepstack_host_address),files={"image":image_data}, data={"min_confidence":min_confidence,"api_key":deepstack_api_key}).json()
+    logger.debug(min_confidence)
     for object in response["predictions"]:
         objects = objects + object["label"] + " ,"
     return objects
 
 def detect_scene(photo_path):
     image_data = open(photo_path,"rb").read()
-    response = requests.post("{}/v1/vision/scene".format(deepstack_host_address),files={"image":image_data}, data={"min_confidence":0.70}).json()
+    if not deepstack_api_key:
+        response = requests.post("{}/v1/vision/scene".format(deepstack_host_address),files={"image":image_data}, data={"min_confidence":min_confidence}).json()
+    else:
+        response = requests.post("{}/v1/vision/scene".format(deepstack_host_address),files={"image":image_data}, data={"min_confidence":min_confidence,"api_key":deepstack_api_key}).json()
     return str(response['label'])
 
 def getFaces(photo_path):
     try:
-        image_data = open(photo_path,"rb").read()
-        response = requests.post("{}/v1/vision/face/recognize".format(deepstack_host_address),files={"image":image_data}, data={"min_confidence":0.70}).json()
         users = ""
+        image_data = open(photo_path,"rb").read()
+        if not deepstack_api_key:
+            response = requests.post("{}/v1/vision/face/recognize".format(deepstack_host_address),files={"image":image_data}, data={"min_confidence":min_confidence}).json()
+        else:
+            response = requests.post("{}/v1/vision/face/recognize".format(deepstack_host_address),files={"image":image_data}, data={"min_confidence":min_confidence,"api_key":deepstack_api_key}).json()
+       
         for user in response["predictions"]:
             users = users + user["userid"] + " ,"
         return users
@@ -168,6 +180,7 @@ def teach(person: str = Form(...) ,teach_file: UploadFile = File(...)):
             return response
     except Exception as e:
         delete_image(image_file)
+        logger.error("Unable to learn " + str(e))
         error = "Aw Snap! something went wrong"
         return JSONResponse(content = '{"error":"'+error+'","success":"false"}')
 
